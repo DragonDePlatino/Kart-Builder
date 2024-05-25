@@ -1,9 +1,11 @@
 
-<div align="center" style="font-weight: bold; font-size: 3rem">
-	<a href="https://github.com/DragonDePlatino/Kart-Builder/releases/latest/download/kart-builder.zip" align="center">DOWNLOAD</a>
-</div>
+<h1 align="center">
+	<a href="https://github.com/DragonDePlatino/Kart-Builder/releases/latest/download/kart-builder.zip">DOWNLOAD</a>
+</h1>
 
 # Kart Builder
+
+<div align="center"><img src="screenshots/template.png"></div>
 
 An aseprite extension for drawing, previewing and exporting racers for Dr. Robotnik's Ring Racers.
 
@@ -26,11 +28,9 @@ If 7-Zip is installed elsewhere and there is no `7z` or `7za` command in your co
 
 ## Installation
 
-Grab the [latest release](https://github.com/DragonDePlatino/Kart-Builder/releases/latest/download/kart-builder.aseprite-extension). Double-click on the `kart-builder.aseprite-extension` and Aseprite will install it. For alternate installation methods, consult the [aseprite documentation](https://www.aseprite.org/docs/extensions/).
+Grab the [latest release](https://github.com/DragonDePlatino/Kart-Builder/releases/latest/download/kart-builder.zip). Double-click on the `kart-builder.aseprite-extension` and Aseprite will install it. For alternate installation methods, consult the [aseprite documentation](https://www.aseprite.org/docs/extensions/).
 
 ## Editing
-
-<div align="center"><img src="screenshots/template.png"></div>
 
 Kart Builder uses a special `*.ase` file as your workspace. This file contains all of the layers, animations and `S_SKIN` properties of your add-on. Sounds should be `*.ogg` files kept next to your `*.ase` file or in a subfolder like `sounds/*.ogg`.
 
