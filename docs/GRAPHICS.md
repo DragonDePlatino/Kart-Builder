@@ -40,6 +40,7 @@ The following graphics can be used as layer names in your Kart Builder template:
 The following fallbacks apply to the special `kart` layer only. If a layer group is named `kart`, these will be attempted before the above table:
 
 | Graphic | Fallback |
+|---------|----------|
 | `SLWL`  | `SLWN`   |
 | `SLWR`  | `SLWN`   |
 | `SLGL`  | `SLWN`   |
