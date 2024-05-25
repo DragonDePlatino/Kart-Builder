@@ -1,6 +1,6 @@
 
 <div align="center" style="font-weight: bold; font-size: 3rem">
-	<a href="https://github.com/DragonDePlatino/Kart-Builder/releases/latest/download/kart-builder.aseprite-extension" align="center">DOWNLOAD</a>
+	<a href="https://github.com/DragonDePlatino/Kart-Builder/releases/latest/download/kart-builder.zip" align="center">DOWNLOAD</a>
 </div>
 
 # Kart Builder
