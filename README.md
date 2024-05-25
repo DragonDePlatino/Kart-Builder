@@ -7,7 +7,7 @@ An aseprite extension for drawing, previewing and exporting racers for Dr. Robot
 ## Table of Contents
 
 * [Setup](docs/SETUP.md)
-* [Template](docs/Template.md)
+* [Template](docs/TEMPLATE.md)
 * [Exporting](docs/EXPORTING.md)
 * [Graphics](docs/GRAPHICS.md)
 
