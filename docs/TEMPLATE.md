@@ -1,6 +1,6 @@
 # Template
 
-Kart Builder uses a special layer layout to organize 
+Kart Builder uses a special layer layout to organize your racer's frames and rotations. You can copy the provided `example/example.ase` for a pre-configured template.
 
 ## Layer Groups
 
