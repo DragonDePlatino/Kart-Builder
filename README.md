@@ -32,7 +32,7 @@ Grab the [latest release](https://github.com/DragonDePlatino/Kart-Builder/releas
 
 ## Editing
 
-Kart Builder uses a special `*.ase` file as your workspace. This file contains all of the layers, animations and `S_SKIN` properties of your add-on. Sounds should be `*.ogg` files kept next to your `*.ase` file or in a subfolder like `sounds/*.ogg`.
+Kart Builder uses a special `*.ase` file as your workspace. This file contains all of the layers, animations and `S_SKIN` properties of your add-on. Sounds should be `*.ogg` files kept next to your `*.ase` file or in a subfolder like `sounds/*.ogg`. An example template is provided in `examples/example.ase`.
 
 ### Layer Groups
 
