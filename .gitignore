@@ -1,0 +1,5 @@
+__info.json
+*.aseprite-extension
+*.zip
+*.tmp*
+Thumbs.db
