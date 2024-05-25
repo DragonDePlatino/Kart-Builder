@@ -1,3 +1,5 @@
+# Graphics
+
 The following graphics can be used as layer names in your Kart Builder template:
 
 | Graphic | Fallback | Full Name              | Usage                                                                                                     |
@@ -34,7 +36,7 @@ The following graphics can be used as layer names in your Kart Builder template:
 | `SIGN`  |          | Signpost               | Displayed at the end of races on the signpost when you win.                                               |
 | `SIGL`  |          | Signpost (Hold This L) | A signpost replacement used by ironman characters when winning against players or hard bots.              |
 | `SSIG`  |          | Shitty Signpost        | A badly-drawn signpost activated via the `working designs` password.                                      |
-| `XTRA`  |          | Extra                  | Character portraits used in menus and the race minimap. See [EXPORT.md](EXPORT.md) for full explanations. |
+| `XTRA`  |          | Extra                  | Character portraits used in menus and the race minimap. See [Exporting](EXPORTING.md) for full explanations. |
 | `TALK`  |          | Talk                   | Talking frames used in tutorial and Jack Frost dialog.                                                    |
 
 The following fallbacks apply to the special `kart` layer only. If a layer group is named `kart`, these will be attempted before the above table:

@@ -1,6 +1,8 @@
+# Exporting
+
 Following is an explanation of each tab in the **Export Kart** dialog.
 
-# Properties
+## Properties
 
 <div align="center"><img src="../screenshots/properties.png"></div>
 
@@ -13,7 +15,7 @@ Following is an explanation of each tab in the **Export Kart** dialog.
 * **Rivals** - The pool of [rival racers](https://www.kartkrew.org/rr-manual/manual/gp/#rival-racer) that will selected when playing as your racer.
   * Kart Builder currently only supports 3 rivals from the basegame pool. Additional and modded rivals can be set by editing the output `*.pk3` in [SLADE](https://slade.mancubus.net/index.php?page=downloads).
 * **Flags** - Additional behavior flags that apply to your character.
-  * **Ironman** - The racer behaves like Heavy Magician, swapping to a random racer after each lap or being hit. They have special signpost behavior outlined in [GRAPHICS.md](GRAPHICS.md).
+  * **Ironman** - The racer behaves like Heavy Magician, swapping to a random racer after each lap or being hit. They have special signpost behavior outlined in [Graphics](GRAPHICS.md).
   * **Machine** - The racer violently explodes on death and plays a different sound when emerging from water.
   * **Badnik** - The racer plays a popping sound and a Flicky emerges from them on death.
 
