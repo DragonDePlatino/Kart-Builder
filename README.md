@@ -30,6 +30,10 @@ If 7-Zip is installed elsewhere and there is no `7z` or `7za` command in your co
 
 Grab the [latest release](https://github.com/DragonDePlatino/Kart-Builder/releases/latest/download/kart-builder.zip). Double-click on the `kart-builder.aseprite-extension` and Aseprite will install it. For alternate installation methods, consult the [aseprite documentation](https://www.aseprite.org/docs/extensions/).
 
+## Exporting
+
+Open `File > Export > Export Kart` to open the **Export Kart** dialog. Click the tabs at the top to change which category of `S_SKIN` properties you are editing. Click `[...]` in the lower-right to specify the output path. Click `Save` when you are done to output a `*.pk3` add-on to that location. See [EXPORT.md](docs/EXPORT.md) for a full explanation of each tab.
+
 ## Editing
 
 Kart Builder uses a special `*.ase` file as your workspace. This file contains all of the layers, animations and `S_SKIN` properties of your add-on. Sounds should be `*.ogg` files kept next to your `*.ase` file or in a subfolder like `sounds/*.ogg`. An example template is provided in `examples/example.ase`.
@@ -57,10 +61,6 @@ Aseprite [slices](https://www.aseprite.org/docs/slices/) are used to define the 
 If a layer is missing for a graphic, Kart Builder will try to find a fallback layer to render instead. For example, if you were missing frame `DRLN` for layer group `head`, then Kart Builder will try to resolve `DRLN > FSGR > SLGR > STGR > STIN` in that order.
 
 If Kart Builder cannot find any fallbacks in the chain, it will skip outputting that layer group. This is common for the `XTRA`, `DEAD`, `SIGN` and `SIGN` layers. In the example template, these are only rendered in the `body` layer group and the rest of the layer groups are transparent. It is suggested you only define these in the `body` layer group.
-
-## Exporting
-
-Open `File > Export > Export Kart` to open the **Export Kart** dialog. Click the tabs at the top to change which category of `S_SKIN` properties you are editing. Click `[...]` in the lower-right to specify the output path. Click `Save` when you are done to output a `*.pk3` add-on to that location. See [EXPORT.md](docs/EXPORT.md) for a full explanation of each tab.
 
 ## Tips
 
