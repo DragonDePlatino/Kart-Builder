@@ -1,0 +1,10 @@
+{
+	"files.exclude": {
+		".vscode": true,
+		"__info.json": true,
+		".gitignore": true,
+		"**/*.zip": true,
+		"**/**.aseprite-extension": true,
+		"LICENSE.md": true
+	}
+}

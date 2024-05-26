@@ -1,5 +1,5 @@
-dofile 'about.lua'
-dofile 'skin.lua'
+dofile 'src/about.lua'
+dofile 'src/skin.lua'
 
 if app.apiVersion < 22 then
 	error('This script requires Aseprite v1.3-rc1 or higher.')
