@@ -1,6 +1,6 @@
 dofile 'table.lua'
 
-plugin_version = '1.0.0'
+plugin_version = '1.0.1'
 plugin_key = 'dragondeplatino/kart-builder'
 
 -- Unpack plugin properties from object into a table.
