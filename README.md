@@ -1,4 +1,4 @@
-<img src="screenshots/template.png" align="center">
+<img src="screenshots/overview.gif" align="center">
 <h3 align="center">
 	<a href="https://github.com/DragonDePlatino/Kart-Builder/releases/latest/download/kart-builder.zip">DOWNLOAD</a>
 </h3>
@@ -7,7 +7,8 @@ An aseprite extension for drawing, previewing and exporting racers for Dr. Robot
 ## Table of Contents
 
 * [Setup](docs/SETUP.md)
-* [Template](docs/TEMPLATE.md)
+* [Editing](docs/EDITING.md)
+* [Previewing](docs/PREVIEWING.md)
 * [Exporting](docs/EXPORTING.md)
 * [Graphics](docs/GRAPHICS.md)
 
