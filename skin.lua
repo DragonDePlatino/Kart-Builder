@@ -445,7 +445,7 @@ function skin_save(path, properties)
 		sound_path = path_normalize(sound_path)
 
 		entries[#entries + 1] = {
-			name = property.id,
+			name = app.fs.fileTitle(sound_path),
 			path = app.fs.joinPath(sprite_path, sound_path)
 		}
 
