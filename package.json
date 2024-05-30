@@ -2,7 +2,7 @@
 	"name": "kart-builder",
 	"displayName": "Kart Builder",
 	"description": "An aseprite extension for drawing, previewing and exporting racers for Dr. Robotnik's Ring Racers.",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"author": {
 		"name": "DragonDePlatino"
 	},

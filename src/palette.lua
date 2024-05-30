@@ -8,6 +8,9 @@ function palette_preview(reset)
 	local startcolor = data.startcolor
 	local prefcolor = data.prefcolor
 
+	-- Keep previewing last color for default.
+	if prefcolor == 'default' then return end
+
 	-- Clean up after changing startcolor
 	if reset then
 		for i = 0, 255 do
