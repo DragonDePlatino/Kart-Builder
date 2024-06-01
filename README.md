@@ -28,7 +28,7 @@ For alternate installation methods, consult the [aseprite documentation](https:/
 
 1. Open `File > Export > Export Kart` to open the **Export Kart** dialog. 
 2. Click `[...]` in the lower-right and specify an output path.
-3. Click `Save` to write a `*.pk3` to that location.
+3. Click `Export` to write a `*.pk3` to that location.
 
 ## Editing
 

@@ -1,4 +1,5 @@
 dofile 'color.lua'
+dofile 'error.lua'
 dofile 'plugin.lua'
 dofile 'properties.lua'
 
@@ -21,7 +22,7 @@ function palette_preview(reset)
 
 	-- Fetch colors of palette.
 	local indexes = colors_skin[prefcolor]
-	if indexes == nil then error('Invalid palette to preview: ' .. prefcolor) end
+	if indexes == nil then return error_new('Invalid palette to preview: ' .. prefcolor) end
 
 	-- Reset current previewed colors.
 	for i = 0, 15 do

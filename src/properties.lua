@@ -1,4 +1,5 @@
 dofile 'color.lua'
+dofile 'dialog.lua'
 dofile 'table.lua'
 
 -- List of properties used by skins.
@@ -61,7 +62,10 @@ properties_skin = {
 		label = 'Start Color',
 		tab = 'Properties',
 		default = 96,
-		changed = function() palette_preview(true) end
+		changed = function()
+			local result = palette_preview(true)
+			if errored(result) then dialog_error(result) end
+		end
 	},
 	{
 		type = 'combobox',
@@ -70,7 +74,10 @@ properties_skin = {
 		tab = 'Properties',
 		options = table_keys(colors_skin),
 		default = 'default',
-		changed = function() palette_preview() end
+		changed = function()
+			local result = palette_preview()
+			if errored(result) then dialog_error(result) end
+		end
 	},
 	{
 		type = 'combobox',
@@ -199,7 +206,7 @@ properties_skin = {
 		write = function() return nil end,
 		changed = function(dialog)
 			dialog:modify({
-				id = 'save',
+				id = 'export',
 				enabled = dialog.data.path:match('%.pk3$') ~= nil
 			})
 			dialog:repaint()

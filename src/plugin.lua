@@ -1,6 +1,6 @@
 dofile 'table.lua'
 
-plugin_version = '1.1.2'
+plugin_version = '1.1.3'
 plugin_key = 'dragondeplatino/kart-builder'
 
 -- Unpack plugin properties from object into a table.
@@ -15,7 +15,7 @@ function plugin_properties_unpack(object, properties, keep_arrays)
 			value = fallback
 		end
 
-		if keep_arrays == true or property.count == nil then
+		if keep_arrays or property.count == nil then
 			out[property.id] = value
 		else
 			for i = 1, property.count do

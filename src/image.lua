@@ -1,3 +1,4 @@
+dofile 'error.lua'
 
 --- Blit an indexed image to another.
 function image_blit(dest, src, position, flipped)
@@ -91,10 +92,10 @@ function image_lump(image)
 	local pivot = Point()
 	if image.width == app.sprite.width and image.height == app.sprite.height then
 		local slice = app.sprite.slices[1]
-		if slice == nil then error('Sprite did not have slice.') end
+		if slice == nil then return error_new{ 'Sprite did not have slice.', 'Add a new slice with the slice tool matching your sprite\'s size.' } end
 
 		pivot = slice.pivot
-		if pivot == nil then error('Sprite slice did not have pivot.') end
+		if pivot == nil then return error_new{ 'Sprite slice did not have pivot.', 'Edit your slice and set a pivot on your racer\'s origin pixel.' } end
 	end
 
 	-- Write offset of sprite.
@@ -173,10 +174,13 @@ function image_entry(image, layername, frame, angle, symmetrical)
 	-- Get output filename.
 	local suffix = string.char(64 + frame) .. angle
 	if angle > 1 and angle < 5 and symmetrical then suffix = suffix .. string.char(64 + frame) .. (10 - angle) end
-	
-	-- Output texture lump.
-	local lump = image_lump(image)
 	local name = layername .. suffix
+	
+	-- Generate texture lump.
+	local lump = image_lump(image)
+	if errored(lump) then return error_new({ 'Error writing texture lump: ' .. name }, lump) end
+		
+	-- Output texture lump.
 	local data = string.char(table.unpack(lump))
 	return { name = name, data = data }
 end

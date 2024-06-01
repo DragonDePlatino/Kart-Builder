@@ -2,7 +2,8 @@ dofile 'about.lua'
 dofile 'skin.lua'
 
 if app.apiVersion < 22 then
-	error('This script requires Aseprite v1.3-rc1 or higher.')
+	local error = error_new{ 'This script requires Aseprite v1.3-rc1 or higher.', 'Older Aseprite versions and LibreSprite are not supported.' }
+	dialog_error(error)
 end
 
 -- Initialize plugin.
@@ -13,10 +14,17 @@ function init(plugin)
 		title = 'Export Kart',
 		group = 'file_export_2',
 		onclick = function()
-			skin_dialog()
-		end,
-		onenabled = function()
-			return true
+			local result = archive_init()
+			if errored(result) then
+				local error = error_new('Error initializing archiver.', result)
+				return dialog_error(error)
+			end
+
+			local result = skin_dialog()
+			if errored(result) then
+				local error = error_new('Error exporting skin.', result)
+				return dialog_error(error)
+			end
 		end
 	}
 
@@ -26,9 +34,6 @@ function init(plugin)
 		group = 'help_about',
 		onclick = function()
 			about_dialog()
-		end,
-		onenabled = function()
-			return true
 		end
 	}
 end

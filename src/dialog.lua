@@ -13,7 +13,7 @@ local property_value = {
 }
 
 -- Open dialog with specified set of properties.
-function dialog_open(dialog, properties, buttons, object)
+function dialog_properties(dialog, properties, buttons, object)
 	local data = plugin_properties_unpack(object, properties)
 
 	-- Organize properties into tabs.
@@ -84,7 +84,7 @@ function dialog_open(dialog, properties, buttons, object)
 	-- Perform initial update of properties.
 	dialog.data = data
 	for _, property in ipairs(properties) do
-		if property.change then
+		if property.changed then
 			property.changed(dialog)
 		end
 	end
@@ -94,3 +94,31 @@ function dialog_open(dialog, properties, buttons, object)
 	return dialog.data
 end
 
+-- Show an error dialog.
+function dialog_error(error)
+	local dialog = Dialog{ title = 'Kart Builder' }
+	
+	-- Append each label to dialog.
+	dialog_error_append(dialog, error.error)
+
+	-- Show error dialog.
+	dialog:button{ text = '    Close    ', hexpand = false }
+	dialog:show()
+
+	if error.suberror ~= nil then
+		-- Show additional error dialogs.
+		dialog_error(error.suberror)
+	end
+end
+
+-- Recursively append labels to error dialog.
+function dialog_error_append(dialog, label)
+	if type(label) == 'string' then
+		dialog:label{ label = label }
+		return
+	end
+
+	for i, label in ipairs(label) do
+		dialog_error_append(dialog, label)
+	end
+end

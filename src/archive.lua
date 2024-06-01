@@ -1,25 +1,41 @@
 dofile 'shell.lua'
 dofile 'file.lua'
 
--- Path to output temporary files.
-local temp_path = app.fs.joinPath(app.fs.tempPath, 'Aseprite', 'Kart Builder')
-
--- Check if 7-Aip binary exists.
-local archiver_path = file_fallback({
+-- Paths checked for 7-Zip.
+local archive_binaries = {
 	'C:\\Program Files\\7-Zip\\7z.exe',
 	'C:\\Program Files(x86)\\7-Zip\\7z.exe'
-})
+}
 
-if archiver_path == nil then
-	-- Check if 7-Zip shell command exists.
-	archiver_path = shell_fallback({
-		'7z',
-		'7za'
-	})
-end
+-- Commands checked.
+local archive_shells = {
+	'7z',
+	'7za'
+}
 
-if archiver_path == nil then
-	error('Failed to find 7-Zip installation. Please install 7-Zip for pk3 packaging support.')
+-- Path to 7-Zip binary.
+local archive_path = nil
+
+-- Initialize archive path.
+function archive_init()
+	if archive_path ~= nil then return end
+
+	-- Check if 7-Zip binary exists.
+	archive_path = file_fallback(archive_binaries)
+
+	if archive_path == nil then
+		-- Check if 7-Zip shell command exists.
+		archive_path = shell_fallback(archive_shells)
+	end
+
+	if archive_path == nil then
+		return error_new{
+			'Failed to find 7-Zip installation. Please install 7-Zip to one of the following locations:',
+			table_map(archive_binaries, function(path) return ' * ' .. path end),
+			'Or make one of the following commands available in your shell:',
+			table_map(archive_shells, function(path) return ' * ' .. path end)
+		}
+	end
 end
 
 -- Create archive from list of entries.
@@ -29,7 +45,8 @@ function archive_create(path, entries)
 
 	-- Delete existing entries.
 	if file_exists(path) then
-		shell_execute(archiver_path, 'd', path, '*')
+		local result = shell_execute(archive_path, 'd', path, '*')
+		if errored(result) then return error_new({ 'Error deleting existing entries in archive:', path }, result) end
 	end
 
 	local names = {}
@@ -39,13 +56,16 @@ function archive_create(path, entries)
 		
 		if entry.data ~= nil then
 			-- Write file to location.
-			file_write(out_path, entry.data)
+			local result = file_write(out_path, entry.data)
+			if errored(result) then return error_new({ 'Failed to write entry in archive:', path }, result) end
 		elseif entry.path ~= nil then
 			-- Copy file to location.
-			file_copy(entry.path, out_path)
+			local result = file_copy(entry.path, out_path)
+			if errored(result) then return error_new({ 'Failed to copy entry in archive:', path }, result) end
 		else
 			-- Write empty tag to location.
-			file_write(out_path, '')
+			local result = file_write(out_path, '')
+			if errored(result) then return error_new({ 'Failed to write tag in archive:', path }, result) end
 		end
 
 		names[#names + 1] = out_path
@@ -53,10 +73,12 @@ function archive_create(path, entries)
 
 	-- Write all filenames to listing.
 	local names_path = app.fs.joinPath(temp_path, 'names')
-	file_write(names_path, table.concat(names, '\n'))
+	local result = file_write(names_path, table.concat(names, '\n'))
+	if errored(result) then return error_new({ 'Failed to write filename listing for archive:', path }, result) end
 
 	-- Add all files to archive.
-	shell_execute(archiver_path, 'a', '-tzip', path, '@' .. shell_sanitize(names_path))
+	local result = shell_execute(archive_path, 'a', '-tzip', path, '@' .. shell_sanitize(names_path))
+	if errored(result) then return error_new({ 'Error adding files to archive:', path }, result) end
 
 	-- Write all renames to listing.
 	local renames = {}
@@ -67,6 +89,9 @@ function archive_create(path, entries)
 
 	-- Write all renames to listing.
 	local renames_path = app.fs.joinPath(temp_path, 'renames')
-	file_write(renames_path, table.concat(renames, '\n'))
-	shell_execute(archiver_path, 'rn', path, '@' .. shell_sanitize(renames_path))
+	local result = file_write(renames_path, table.concat(renames, '\n'))
+	if errored(result) then return error_new({ 'Failed to write archive rename listing for archive:', path }, result) end
+
+	local result = shell_execute(archive_path, 'rn', path, '@' .. shell_sanitize(renames_path))
+	if errored(result) then return error_new({ 'Error renaming files in archive:', path }, result) end
 end

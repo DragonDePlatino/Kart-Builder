@@ -24,9 +24,9 @@ Aseprite [slices](https://www.aseprite.org/docs/slices/) are used to define the 
 
 ### Fallbacks
 
-If a layer is missing for a graphic, Kart Builder will try to find a fallback layer to render instead. For example, if you were missing frame `DRLN` for layer group `head`, then Kart Builder will try to resolve `DRLN > FSGR > SLGR > STGR > STIN` in that order. See [Graphics](GRAPHICS.md) for a full list of these fallbacks.
+If a layer is missing for a graphic, Kart Builder will try to find a fallback layer to render instead. For example, if you were missing layer `DRLN` for layer group `head`, then Kart Builder will try to resolve `DRLN > FSGR > SLGR > STGR > STIN` in that order. See [Graphics](GRAPHICS.md) for a full list of these fallbacks.
 
-If Kart Builder cannot find any fallbacks in the chain, it will skip outputting that layer group. This is common for the `XTRA`, `DEAD`, `SIGN` and `SIGN` layers. In the example template, these are only rendered in the `body` layer group and the rest of the layer groups are transparent. It is suggested you only define these in the `body` layer group.
+If Kart Builder cannot find any fallbacks in the chain, it will skip outputting that layer group. This is common for the `XTRA`, `DEAD`, `SIGN` and `SSIG` layers. In the example template, these are only rendered in the `body` layer group and the rest of the layer groups are transparent. It is suggested you only define these in the `body` layer group.
 
 ## Tips
 

@@ -57,8 +57,9 @@ local skin_sprites = {
 local skin_buttons = {
 	{
 		type = 'button',
-		id = 'save',
-		text = 'Save'
+		id = 'export',
+		text = 'Export',
+		enabled = false
 	},
 	{
 		type = 'button',
@@ -77,10 +78,10 @@ function skin_dialog()
 	-- Extract properties from current sprite and open dialog for editing.
 	local dialog = Dialog({ title = 'Export Kart' })
 	local save_button = skin_buttons[0]
-	local data = dialog_open(dialog, properties_skin, skin_buttons, app.sprite)
-	if not data.save then return end
+	local data = dialog_properties(dialog, properties_skin, skin_buttons, app.sprite)
+	if not data.export then return end
 
-	skin_save(data.path, properties_skin)
+	return skin_save(data.path, properties_skin)
 end
 
 -- Write set of skin properties to a key=value string.
@@ -96,7 +97,7 @@ function skin_string(object, properties)
 		end
 
 		if tostring(value):find(' ') then
-			error('Failed to export. Sprite property "' .. property.id .. '" cannot contain spaces.')
+			return error_new('Sprite property "' .. property.id .. '" cannot contain spaces: ' .. tostring(value))
 		end
 
 		if value == nil or value == '' or value == false then goto continue end
@@ -111,10 +112,6 @@ end
 function skin_save(path, properties)
 	-- Track array of files to output.
 	local entries = {}
-
-	if app.sprite.height > 256 then
-		error('Maximum possible texture height is 256. Please shrink your sprite before exporting.')
-	end
 
 	-- Get stack of groups to output.
 	local groups = {}
@@ -148,10 +145,14 @@ function skin_save(path, properties)
 	-- End sound table.
 	entries[#entries + 1] = { name = 'DS_END' }
 
+	-- Get skin properties as a string.
+	local data = skin_string(app.sprite, properties)
+	if errored(data) then return error_new('Failed to convert skin properties to string.', data) end
+
 	-- Output skin file.
 	entries[#entries + 1] = {
 		name = 'S_SKIN',
-		data = skin_string(app.sprite, properties)
+		data = data
 	}
 
 	-- Output each image file.
@@ -197,7 +198,11 @@ function skin_save(path, properties)
 
 					-- Apply dithering to final image.
 					image_dither(image, ditherstyle)
-					entries[#entries + 1] = image_entry(image, layername, frame, angle, symmetrical)
+					local entry = image_entry(image, layername, frame, angle, symmetrical)
+					if errored(entry) then return error_new('Error writing angle image entry.', entry) end
+
+					-- Add to list of entries.
+					entries[#entries + 1] = entry
 					image:clear()
 					::continue::
 				end
@@ -219,7 +224,7 @@ function skin_save(path, properties)
 			end
 
 			-- Output each layer in stack.
-			for frame = 1,framecount do
+			for frame = 1, framecount do
 				for g, group in pairs(groups) do
 					-- Treat different angles as frames for more compact sprite layout.
 					local cel = cel_find(group, layername, 1, frame)
@@ -232,9 +237,14 @@ function skin_save(path, properties)
 					local bounds = image:shrinkBounds()
 					local cropped = Image(ImageSpec{ width=bounds.width, height=bounds.height, colorMode=ColorMode.INDEXED, transparentColor=1 })
 					image_blit(cropped, image, Point(), false)
-					entries[#entries + 1] = image_entry(cropped, layername, frame, 0, false)
+
+					local entry = image_entry(cropped, layername, frame, 0, false)
+					if errored(entry) then return error_new('Error writing cropped image entry.', entry) end 
+					entries[#entries + 1] = entry
 				else
-					entries[#entries + 1] = image_entry(image, layername, frame, 0, false)
+					local entry = image_entry(image, layername, frame, 0, false)
+					if errored(entry) then return error_new('Error writing directionless image entry.', entry) end 
+					entries[#entries + 1] = entry
 				end
 
 				image:clear()
@@ -245,5 +255,5 @@ function skin_save(path, properties)
 	end
 
 	-- Output archive of entries.
-	archive_create(path, entries)
+	return archive_create(path, entries)
 end

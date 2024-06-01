@@ -1,3 +1,4 @@
+dofile 'error.lua'
 
 -- Determine if given command exists.
 function shell_exists(name)
@@ -35,8 +36,8 @@ function shell_execute(...)
 	local okay, reason, code = os.execute(command)
 
 	if reason == 'exit' then
-		if code ~= 0 then error('Exit status ' .. code .. ' while executing command: ' .. args[1]) end
+		if code ~= 0 then return error_new{ 'Exit status ' .. code .. ' while executing command:', command } end
 	elseif reason == 'signal' then
-		error('Termination signal ' .. code .. ' while executing command: ' .. args[1])
+		return error_new{ 'Termination signal ' .. code .. ' while executing command:', command }
 	end
 end

@@ -46,3 +46,27 @@ function table_remove_value(t, value)
 		end
 	end
 end
+
+-- Map each value of a table.
+function table_map(t, callback)
+	local out = {}
+	
+	for i, value in ipairs(t) do
+		out[i] = callback(value)
+	end
+
+	return out
+end
+
+-- Concatenate two or more tables together into a new one.
+function table_concat(...)
+	local out = {}
+
+	for i, subtable in ipairs{...} do
+		for j, subvalue in ipairs(subtable) do
+			out[#out + 1] = subvalue
+		end
+	end
+
+	return out
+end
