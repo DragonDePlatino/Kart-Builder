@@ -2,6 +2,29 @@ dofile 'color.lua'
 dofile 'dialog.lua'
 dofile 'table.lua'
 
+-- Validate property is within a known range.
+function validate_range(min, max)
+	return function(value)
+		if value < min or value > max then return 'Property was outside valid range. (min: ' .. tostring(low) .. ', max: ' .. tostring(high) .. ')' end
+	end
+end
+
+-- Validate a property is within max length.
+function validate_length(length)
+	return function(value)
+		if value:len() > length then return 'Property was too long. (max length: ' .. tostring(length) .. ')' end
+	end
+end
+
+-- Validate a sound name is valid.
+function validate_sound(value)
+	local path = path_normalize(value)
+	local name = app.fs.fileTitle(path)
+
+	if not string_starts(name, 'DS') then return 'Property must start with "DS"' end
+	if value:len() > 8 then return 'Property was too long. (max length: 8)' end
+end
+
 -- List of properties used by skins.
 properties_skin = {
 	{
@@ -9,35 +32,40 @@ properties_skin = {
 		id = 'name',
 		label = 'Name',
 		tab = 'Properties',
-		default = ''
+		default = '',
+		validate = validate_length(16)
 	},
 	{
 		type = 'entry',
 		id = 'realname',
 		tab = 'Properties',
 		label = 'Real Name',
-		default = ''
+		default = '',
+		validate = validate_length(16)
 	},
 	{
 		type = 'entry',
 		id = 'facerank',
 		label = 'Rank',
 		tab = 'Face',
-		default = ''
+		default = '',
+		validate = validate_length(8)
 	},
 	{
 		type = 'entry',
 		id = 'facewant',
 		label = 'Want',
 		tab = 'Face',
-		default = ''
+		default = '',
+		validate = validate_length(8)
 	},
 	{
 		type = 'entry',
 		id = 'facemmap',
 		label = 'Minimap',
 		tab = 'Face',
-		default = ''
+		default = '',
+		validate = validate_length(8)
 	},
 	{
 		type = 'slider',
@@ -46,7 +74,8 @@ properties_skin = {
 		tab = 'Properties',
 		min = 1,
 		max = 9,
-		default = 5
+		default = 5,
+		validate = validate_range(1, 9)
 	},
 	{
 		type = 'slider',
@@ -54,7 +83,8 @@ properties_skin = {
 		tab = 'Properties',
 		min = 1,
 		max = 9,
-		default = 5
+		default = 5,
+		validate = validate_range(1, 9)
 	},
 	{
 		type = 'color',
@@ -62,6 +92,7 @@ properties_skin = {
 		label = 'Start Color',
 		tab = 'Properties',
 		default = 96,
+		validate = validate_range(0, 240),
 		changed = function()
 			local result = palette_preview(true)
 			if errored(result) then dialog_error(result) end
@@ -117,7 +148,8 @@ properties_skin = {
 		label = 'Gloat',
 		tab = 'Sounds',
 		default = 'sounds/DSKGLOAT.ogg',
-		write = app.fs.fileTitle
+		write = app.fs.fileTitle,
+		validate = validate_sound
 	},
 	{
 		type = 'entry',
@@ -125,6 +157,7 @@ properties_skin = {
 		label = 'Win',
 		tab = 'Sounds',
 		default = 'sounds/DSKWIN.ogg',
+		validate = validate_sound,
 		write = app.fs.fileTitle
 	},
 	{
@@ -133,6 +166,7 @@ properties_skin = {
 		label = 'Lose',
 		tab = 'Sounds',
 		default = 'sounds/DSKLOSE.ogg',
+		validate = validate_sound,
 		write = app.fs.fileTitle
 	},
 	{
@@ -141,6 +175,7 @@ properties_skin = {
 		label = 'Slow',
 		tab = 'Sounds',
 		default = 'sounds/DSKSLOW.ogg',
+		validate = validate_sound,
 		write = app.fs.fileTitle
 	},
 	{
@@ -149,6 +184,7 @@ properties_skin = {
 		label = 'Hurt',
 		tab = 'Sounds',
 		default = 'sounds/DSKHURT1.ogg',
+		validate = validate_sound,
 		write = app.fs.fileTitle
 	},
 	{
@@ -156,7 +192,8 @@ properties_skin = {
 		id = 'DSKHURT2',
 		tab = 'Sounds',
 		default = 'sounds/DSKHURT2.ogg',
-		write = app.fs.fileTitle
+		write = app.fs.fileTitle,
+		validate = validate_sound
 	},
 	{
 		type = 'entry',
@@ -164,6 +201,7 @@ properties_skin = {
 		label = 'Attack',
 		tab = 'Sounds',
 		default = 'sounds/DSKATTK1.ogg',
+		validate = validate_sound,
 		write = app.fs.fileTitle
 	},
 	{
@@ -171,6 +209,7 @@ properties_skin = {
 		id = 'DSKATTK2',
 		tab = 'Sounds',
 		default = 'sounds/DSKATTK2.ogg',
+		validate = validate_sound,
 		write = app.fs.fileTitle
 	},
 	{
@@ -179,6 +218,7 @@ properties_skin = {
 		label = 'Boost',
 		tab = 'Sounds',
 		default = 'sounds/DSKBOST1.ogg',
+		validate = validate_sound,
 		write = app.fs.fileTitle
 	},
 	{
@@ -186,6 +226,7 @@ properties_skin = {
 		id = 'DSKBOST2',
 		tab = 'Sounds',
 		default = 'sounds/DSKBOST2.ogg',
+		validate = validate_sound,
 		write = app.fs.fileTitle
 	},
 	{
@@ -194,6 +235,7 @@ properties_skin = {
 		label = 'Hit',
 		tab = 'Sounds',
 		default = 'sounds/DSKHITEM.ogg',
+		validate = validate_sound,
 		write = app.fs.fileTitle
 	},
 	{

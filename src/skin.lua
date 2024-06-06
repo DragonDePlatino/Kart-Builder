@@ -95,13 +95,21 @@ function skin_string(object, properties)
 		if property.write then
 			value = property.write(value)
 		end
+		
+		local string = tostring(value)
+		local message = 'Skin property "' .. property.id .. '" was invalid: ' .. string
 
-		if tostring(value):find(' ') then
-			return error_new('Sprite property "' .. property.id .. '" cannot contain spaces: ' .. tostring(value))
+		if property.validate then
+			local error = property.validate(value)
+			if error ~= nil then return error_new({ message, error }) end
+		end
+
+		if string:find(' ') then
+			return error_new({ message, 'Properties cannot contain spaces.' })
 		end
 
 		if value == nil or value == '' or value == false then goto continue end
-		out[#out + 1] = property.id .. ' = ' .. tostring(value)
+		out[#out + 1] = property.id .. ' = ' .. string
 		::continue::
 	end
 
