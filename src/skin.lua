@@ -73,6 +73,52 @@ local layer_crop = {
 	XTRA = true
 }
 
+-- Parse contents of a skin file into a table.
+function skin_table(text)
+	local output = {}
+
+	local lines = string_split(text, '\r\n')
+	for _, line in ipairs(lines) do
+		local key, value = line:match('^(%S+)%s*=%s*(%S+)$')
+		if key == nil then goto continue end
+
+		local number = tonumber(value)
+		if number ~= nil then
+			value = number
+		elseif value:match(',') then
+			value = string_split(value, ',')
+		end
+
+		output[key] = value
+		::continue::
+	end
+
+	return output
+end
+
+-- Get list of skins in a list of archives.
+function skin_archive_tables(paths)
+	for _, path in ipairs(paths) do
+		local files = archive_list(path)
+		if errored(files) then return dialog_error({ 'Error listing skins in archive:', path }, list) end
+
+		local skin_paths = {}
+		for _, file in ipairs(files) do
+			local match = file:match('S_SKIN$') or file:match('S_SKIN%.%S+$')
+			if match ~= nil then skin_paths[#skin_paths + 1] = file end
+		end
+
+		local entries = archive_read(path, skin_paths)
+		if errored(entries) then return error_new({ 'Error reading entries from skin archive:', path }, entries) end
+
+		for _, entry in ipairs(entries) do
+			entry.data = skin_table(entry.data)
+		end
+
+		return entries
+	end
+end
+
 -- Open dialog for saving skin.
 function skin_dialog()
 	-- Extract properties from current sprite and open dialog for editing.

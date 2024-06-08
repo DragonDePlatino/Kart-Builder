@@ -8,7 +8,6 @@ end
 
 -- Initialize plugin.
 function init(plugin)
-
 	plugin:newCommand{
 		id = 'KartBuilderExport',
 		title = 'Export Kart',

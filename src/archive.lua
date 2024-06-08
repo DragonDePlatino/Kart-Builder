@@ -38,9 +38,53 @@ function archive_init()
 	end
 end
 
+-- List files in an archive.
+function archive_list(path)
+	-- Run archiver and get listing.
+	local output = shell_stdout(archive_path, 'l', path)
+	if errored(output) then return error_new({ 'Failed to list files in archive:', path }, output) end
+	
+	-- Cut down listing to just filenames.
+	local files = {}
+	local lines = string_split(output, '\r\n')
+	for _, line in ipairs(lines) do
+		local match = line:match('%d+-%d+-%d+ +%d+:%d+:%d+ +%S+ +%d+ +%d+ +([%S]+)$')
+		if match == nil then goto continue end
+		files[#files + 1] = match
+		::continue::
+	end
+
+	return files
+end
+
+-- Read specified files from archive.
+function archive_read(path, names)
+	local temp_path = path_temp('extract')
+	app.fs.makeAllDirectories(temp_path)
+
+	-- Write all filenames to listing.
+	local names_path = app.fs.joinPath(temp_path, 'names')
+	local result = file_write(names_path, table.concat(names, '\n'))
+	if errored(result) then return error_new({ 'Failed to write filename listing for archive:', path }, result) end
+
+	local result = shell_execute(archive_path, 'x', path, '-o' .. shell_sanitize_arg(temp_path), '@' .. shell_sanitize_arg(names_path), '-y')
+	if errored(result) then return error_new({ 'Error reading files from archive:', path }, result) end
+
+	local entries = {}
+	for _, name in ipairs(names) do
+		local fullpath = app.fs.joinPath(temp_path, name)
+		local data = file_read(fullpath)
+
+		if errored(data) then return error_new({ 'Error reading entry in archive:', name }, data) end
+		entries[#entries + 1] = { name = name, data = data }
+	end
+
+	return entries
+end
+
 -- Create archive from list of entries.
 function archive_create(path, entries)
-	local temp_path = app.fs.joinPath(app.fs.tempPath, 'Aseprite', 'Kart Builder')
+	local temp_path = path_temp('output')
 	app.fs.makeAllDirectories(temp_path)
 
 	-- Delete existing entries.
@@ -77,7 +121,7 @@ function archive_create(path, entries)
 	if errored(result) then return error_new({ 'Failed to write filename listing for archive:', path }, result) end
 
 	-- Add all files to archive.
-	local result = shell_execute(archive_path, 'a', '-tzip', path, '@' .. shell_sanitize(names_path))
+	local result = shell_execute(archive_path, 'a', '-tzip', path, '@' .. shell_sanitize_arg(names_path))
 	if errored(result) then return error_new({ 'Error adding files to archive:', path }, result) end
 
 	-- Write all renames to listing.
@@ -92,6 +136,6 @@ function archive_create(path, entries)
 	local result = file_write(renames_path, table.concat(renames, '\n'))
 	if errored(result) then return error_new({ 'Failed to write archive rename listing for archive:', path }, result) end
 
-	local result = shell_execute(archive_path, 'rn', path, '@' .. shell_sanitize(renames_path))
+	local result = shell_execute(archive_path, 'rn', path, '@' .. shell_sanitize_arg(renames_path))
 	if errored(result) then return error_new({ 'Error renaming files in archive:', path }, result) end
 end

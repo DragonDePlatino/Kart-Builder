@@ -116,7 +116,7 @@ properties_skin = {
 		id = 'rivals',
 		label = 'Rivals',
 		tab = 'Properties',
-		options = rival_names,
+		options = table_keys(rival_names),
 		default = { 'sonic', 'sonic', 'sonic' },
 		write = function(value) return table.concat(value, ',') end
 	},

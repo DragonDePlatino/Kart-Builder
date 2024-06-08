@@ -15,7 +15,7 @@ function shell_fallback(names)
 end
 
 -- Sanitize a shell argument.
-function shell_sanitize(arg)
+function shell_sanitize_arg(arg)
 	if arg:find(' ') and not arg:find('"') then
 		return '"' .. arg .. '"'
 	end
@@ -23,16 +23,22 @@ function shell_sanitize(arg)
 	return arg
 end
 
--- Execute a shell command with argujments.
-function shell_execute(...)
+-- Sanitize shell arguments.
+function shell_sanitize_args(...)
 	local args = {}
-	
+
 	for i, subarg in ipairs{...} do
-		args[i] = shell_sanitize(subarg)
+		args[i] = shell_sanitize_arg(subarg)
 	end
 
 	local command = table.concat(args, ' ')
 	if app.fs.pathSeparator == '\\' then command = '"' .. command .. '"' end
+	return command
+end
+
+-- Execute a shell command with arguments.
+function shell_execute(...)
+	local command = shell_sanitize_args(...)
 	local okay, reason, code = os.execute(command)
 
 	if reason == 'exit' then
@@ -40,4 +46,17 @@ function shell_execute(...)
 	elseif reason == 'signal' then
 		return error_new{ 'Termination signal ' .. code .. ' while executing command:', command }
 	end
+end
+
+-- Execute given command and get stdout.
+function shell_stdout(...)
+	local command = shell_sanitize_args(...)
+	local file = io.popen(command, 'r')
+	if file == nil then return error_new{ 'Failed to execute command:', command } end
+
+	local string = file:read('*a')
+	if string == nil then return error_new{ 'Failed to read stdout of command:', command } end
+	
+	file:close()
+	return string
 end

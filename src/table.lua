@@ -30,6 +30,18 @@ function table_keys(t)
 	return keys
 end
 
+-- Get list of values in a table.
+function table_values(t)
+	local values = {}
+
+	for _, value in pairs(t) do
+		values[#values + 1] = value
+	end
+
+	table.sort(values)
+	return values
+end
+
 -- Get number of entries in table.
 function table_length(t)
 	local count = 0
