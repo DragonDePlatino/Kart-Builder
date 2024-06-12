@@ -94,6 +94,20 @@ function dialog_properties(dialog, properties, buttons, object)
 	return dialog.data
 end
 
+-- Show a notice dialog.
+function dialog_notice(...)
+	local dialog = Dialog{ title = 'Kart Builder' }
+
+	-- Add each label to dialog.
+	for _, label in ipairs{...} do
+		dialog:label{ label = label }
+	end
+
+	-- Show error dialog.
+	dialog:button{ text = '    Close    ', hexpand = false }
+	dialog:show()
+end
+
 -- Show an error dialog.
 function dialog_error(error)
 	local dialog = Dialog{ title = 'Kart Builder' }

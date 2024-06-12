@@ -53,6 +53,17 @@ local skin_sprites = {
 	{ name = 'TALK', frames = {} }
 }
 
+-- Skin autofill rules.
+local skin_autofills = {
+	STIL = { exact = true, rules = { '', '', '', '', 'STINA5'} },
+	STIR = { exact = true, rules = { '', '', '', '', 'STINA5'} },
+	STGL = { exact = false, rules = { 'STINA8', 'STINA1', 'STINA2', 'STINA3', 'STINA4', 'STIRA5', 'STINA6', 'STINA7'} },
+	STGR = { exact = false, rules = { 'STINA2', 'STINA3', 'STINA4', 'STILA5', 'STINA6', 'STINA7', 'STINA8', 'STINA1'} },
+	STLL = { exact = false, rules = { 'STINA7', 'STINA8', 'STINA1', 'STINA2', 'STINA3', 'STINA4', 'STINA5', 'STINA6' } },
+	STLR = { exact = false, rules = { 'STINA3', 'STINA4', 'STINA5', 'STINA6', 'STINA7', 'STINA8', 'STINA1', 'STINA2' } },
+	SPIN = { exact = true, rules = { 'STINA1', 'STINA2', 'STINA3', 'STINA4', 'STINA5', 'STINA6', 'STINA7', 'STINA8' } },
+}
+
 -- List of skin buttons.
 local skin_buttons = {
 	{
@@ -77,8 +88,7 @@ local layer_crop = {
 function skin_table(text)
 	local output = {}
 
-	local lines = string_split(text, '\r\n')
-	for _, line in ipairs(lines) do
+	for _, line in ipairs(string_split(text, '\r\n')) do
 		local key, value = line:match('^(%S+)%s*=%s*(%S+)$')
 		if key == nil then goto continue end
 
@@ -224,8 +234,8 @@ function skin_save(path, properties)
 				local symmetrical = true
 				for g, group in pairs(groups) do
 					for _, angle in ipairs({ 6, 7, 8 }) do
-						local cel, flipped = cel_find(group, layername, frame, angle)
-						symmetrical = symmetrical and flipped
+						local cel, flip = cel_find(group, layername, frame, angle)
+						symmetrical = symmetrical and flip
 					end
 				end
 
@@ -238,9 +248,9 @@ function skin_save(path, properties)
 					
 					-- Output each layer in stack.
 					for g, group in pairs(groups) do
-						local cel, flipped = cel_find(group, layername, frame, angle)
+						local cel, flip = cel_find(group, layername, frame, angle)
 						if cel ~= nil then
-							image_blit(image, cel.image, cel.position, flipped)
+							image_blit(image, cel.image, cel.position, flip)
 							dirty = true
 						end
 					end
@@ -281,9 +291,9 @@ function skin_save(path, properties)
 			for frame = 1, framecount do
 				for g, group in pairs(groups) do
 					-- Treat different angles as frames for more compact sprite layout.
-					local cel = cel_find(group, layername, 1, frame)
+					local cel, flip = cel_find(group, layername, 1, frame)
 					if cel ~= nil then
-						image_blit(image, cel.image, cel.position, flipped)
+						image_blit(image, cel.image, cel.position, flip)
 					end
 				end
 
@@ -310,4 +320,64 @@ function skin_save(path, properties)
 
 	-- Output archive of entries.
 	return archive_create(path, entries)
+end
+
+-- Autofill frames of specified layer.
+function skin_autofill()
+
+	-- Determine range to run autofills.
+	local dests = {}
+	if #app.range.layers then
+		dests = app.range.layers
+	else
+		dests = { app.layer }
+		if dest == nil then return dialog_notice('No layer currently selected!') end
+		if dest.isGroup then return dialog_notice('Group layer was selected.', 'Autofill rules can only be executed on image layers.') end
+	end
+
+	for i, dest in ipairs(dests) do
+		if dest.isGroup then goto continue_layer end
+
+		local offsets = string_points(dest.data)
+
+		local group = dest.parent
+		if group == nil then return dialog_notice('Selected layer had no parent group!') end
+		if group.isImage then return dialog_notice('Selected layer had an image layer parent.', 'Autofill rules can only be executed on image layers inside layer groups.') end
+		
+		local autofill = skin_autofills[dest.name]
+		if autofill == nil then return dialog_notice('No autofill rules available for layer: ' .. dest.name) end
+	
+		local log = { 'Executed autofill rules for layer: '.. dest.name, '' }
+		for i, rule in ipairs(autofill.rules) do
+			local prefix = '    (' .. tostring(i) .. ') '
+			local offset = offsets[i] or Point(0, 0)
+			if rule == '' then goto continue_rule end
+	
+			local source, frame, angle = cel_split(rule)
+			if errored(source) then return error_new('Failed to parse autofill rule: ' .. rule, source) end
+	
+			local cel, flip = cel_find(group, source, frame, angle, autofill.exact)
+			if cel == nil then
+				log[#log + 1] = prefix .. 'Skipped. Cel was empty: ' .. rule
+				goto continue_rule
+			end
+	
+			-- Copy over pixels from other cel to this one.
+			local sign = flip and -1 or 1
+			local image = Image(ImageSpec{ width = app.sprite.width, height = app.sprite.height, colorMode = ColorMode.INDEXED, transparentColor = 1 })
+			local canvas = app.sprite:newCel(dest, i, image)
+			image_blit(canvas.image, cel.image, Point(cel.position.x + offset.x * sign, cel.position.y, offset.y), flip)
+			
+	
+			log[#log + 1] = prefix .. 'Copied: ' .. rule .. ' (' .. tostring(offset.x) .. ', ' .. tostring(offset.y) .. ')'
+			::continue_rule::
+		end
+
+		if #dests == 1 then dialog_notice(table.unpack(log)) end
+		::continue_layer::
+	end
+
+	if #dests > 1 then dialog_notice('Executed autofill rules for ' .. #dests .. ' layers.') end
+	
+	app.refresh()
 end

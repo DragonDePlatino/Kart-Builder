@@ -2,7 +2,10 @@
 <h3 align="center">
 	<a href="https://github.com/DragonDePlatino/Kart-Builder/releases/latest/download/kart-builder.zip">DOWNLOAD</a>
 </h3>
+
 An aseprite extension for drawing, previewing and exporting racers for Dr. Robotnik's Ring Racers.
+
+If you're an existing Kart Maker user and unsure how this matches up, check out a [detailed comparison](docs/COMPARISON.md)!
 
 ## Table of Contents
 
@@ -37,6 +40,7 @@ Kart Builder uses a special `*.ase` file as your workspace. This file contains a
 ## Features
 - [x] Full export for all sprites and sounds
 - [x] Visual editor for `S_SKIN` properties
+- [x] Autofill look/turn frames from idle frames
 - [ ] Live preview for frames and palettes
 - [ ] Raised wheel (Eggman) kart template
 - [ ] Modded rivals support

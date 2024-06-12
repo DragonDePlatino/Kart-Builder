@@ -46,8 +46,7 @@ function archive_list(path)
 	
 	-- Cut down listing to just filenames.
 	local files = {}
-	local lines = string_split(output, '\r\n')
-	for _, line in ipairs(lines) do
+	for _, line in ipairs(string_split(output, '\r\n')) do
 		local match = line:match('%d+-%d+-%d+ +%d+:%d+:%d+ +%S+ +%d+ +%d+ +([%S]+)$')
 		if match == nil then goto continue end
 		files[#files + 1] = match

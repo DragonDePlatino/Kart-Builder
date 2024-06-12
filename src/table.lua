@@ -82,3 +82,18 @@ function table_concat(...)
 
 	return out
 end
+
+-- Filter an array to the unique values.
+function table_unique(t)
+	local seen = {}
+	local out = {}
+
+	for _, value in ipairs(t) do
+		if (not seen[value]) then
+			out[#out + 1] = value
+			seen[value] = true
+		end
+	end
+
+	return out
+end

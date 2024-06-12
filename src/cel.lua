@@ -1,3 +1,18 @@
+dofile 'error.lua'
+
+-- Split a cel name into individual parts.
+function cel_split(name)
+	local layer, framename, anglename  = name:match('(%u%u%u%u)(%u)(%d)')
+	if layer == nil then return error_new('Invalid cel name: ' .. name) end
+
+	local frame = framename:byte() - string.byte('@')
+	if frame < 1 or frame > 4 then return error_new('Frame out of range: ' .. framename .. ' (expected 1 ~ 4, got ' .. frame .. ')') end
+
+	local angle = tonumber(anglename)
+	if angle < 1 or angle > 8 then return error_new('Angle out of range: ' .. anglename .. ' (expected 1 ~ 8, got ' .. angle .. ')') end
+
+	return layer, frame, angle
+end
 
 -- Resolve a cel.
 function cel_find(group, layername, frame, angle, exact)
@@ -19,13 +34,13 @@ function cel_find(group, layername, frame, angle, exact)
 
 	if frame > 1 then
 		-- Try to fallback on first frame.
-		local cel, flipped = cel_find(group, layername, 1, angle, true)
-		if cel ~= nil then return cel, flipped end
+		local cel, flip = cel_find(group, layername, 1, angle, true)
+		if cel ~= nil then return cel, flip end
 	end
 
 	if angle > 5 then
 		-- Try to find flipped cel from this layer.
-		local cel, flipped = cel_find(group, layername, frame, 10 - angle)
+		local cel, flip = cel_find(group, layername, frame, 10 - angle)
 		if cel ~= nil then return cel, true end
 	end
 

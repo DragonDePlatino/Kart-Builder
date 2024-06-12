@@ -1,18 +1,18 @@
 dofile 'error.lua'
 
 --- Blit an indexed image to another.
-function image_blit(dest, src, position, flipped)
-	if flipped then
-	local startx = dest.width - src.width - position.x
-	local starty = position.y
-	for y = 0, src.height - 1 do
-		for x = 0, src.width - 1 do
-			local color = src:getPixel(src.width - x - 1, y)
-			if color ~= 1 then
-				dest:drawPixel(startx + x, starty + y, color)
+function image_blit(dest, src, position, flip)
+	if flip then
+		local startx = dest.width - src.width - position.x
+		local starty = position.y
+		for y = 0, src.height - 1 do
+			for x = 0, src.width - 1 do
+				local color = src:getPixel(src.width - x - 1, y)
+				if color ~= 1 then
+					dest:drawPixel(startx + x, starty + y, color)
+				end
 			end
 		end
-	end
 	else
 		local startx = position.x
 		local starty = position.y
