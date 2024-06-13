@@ -55,13 +55,37 @@ local skin_sprites = {
 
 -- Skin autofill rules.
 local skin_autofills = {
-	STIL = { exact = true, rules = { '', '', '', '', 'STINA5'} },
-	STIR = { exact = true, rules = { '', '', '', '', 'STINA5'} },
-	STGL = { exact = false, rules = { 'STINA8', 'STINA1', 'STINA2', 'STINA3', 'STINA4', 'STIRA5', 'STINA6', 'STINA7'} },
-	STGR = { exact = false, rules = { 'STINA2', 'STINA3', 'STINA4', 'STILA5', 'STINA6', 'STINA7', 'STINA8', 'STINA1'} },
-	STLL = { exact = false, rules = { 'STINA7', 'STINA8', 'STINA1', 'STINA2', 'STINA3', 'STINA4', 'STINA5', 'STINA6' } },
-	STLR = { exact = false, rules = { 'STINA3', 'STINA4', 'STINA5', 'STINA6', 'STINA7', 'STINA8', 'STINA1', 'STINA2' } },
-	SPIN = { exact = true, rules = { 'STINA1', 'STINA2', 'STINA3', 'STINA4', 'STINA5', 'STINA6', 'STINA7', 'STINA8' } },
+	STIL = { exact = true,	rules = {	'',			'',			'',			'',			'STINA5'									 } },
+	STIR = { exact = true,	rules = {	'',			'',			'',			'',			'STINA5'									 } },
+	STGL = { exact = false,	rules = {	'STINA8',	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STIRA5',	'STINA6',	'STINA7' } },
+	STGR = { exact = false,	rules = {	'STINA2',	'STINA3',	'STINA4',	'STILA5',	'STINA6',	'STINA7',	'STINA8',	'STINA1' } },
+	STLL = { exact = false,	rules = {	'STINA7',	'STINA8',	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STINA5',	'STINA6' } },
+	STLR = { exact = false,	rules = {	'STINA3',	'STINA4',	'STINA5',	'STINA6',	'STINA7',	'STINA8',	'STINA1',	'STINA2' } },
+
+	SLWN = { exact = false,	rules = {	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STINA5',	'STIRA6',	'STINA7',	'STINA8' } },
+	SLWL = { exact = false,	rules = {	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STILA5',	'STIRA6',	'STINA7',	'STINA8' } },
+	SLWR = { exact = false,	rules = {	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STIRA5',	'STIRA6',	'STINA7',	'STINA8' } },
+	SLGL = { exact = false,	rules = {	'STINA8',	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STIRA5',	'STINA6',	'STINA7' } },
+	SLGR = { exact = false,	rules = {	'STINA2',	'STINA3',	'STINA4',	'STILA5',	'STINA6',	'STINA7',	'STINA8',	'STINA1' } },
+	SLLL = { exact = false,	rules = {	'STINA7',	'STINA8',	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STINA5',	'STINA6' } },
+	SLLR = { exact = false,	rules = {	'STINA3',	'STINA4',	'STINA5',	'STINA6',	'STINA7',	'STINA8',	'STINA1',	'STINA2' } },
+
+	FSTN = { exact = false,	rules = {	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STINA5',	'STIRA6',	'STINA7',	'STINA8' } },
+	FSTL = { exact = false,	rules = {	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STILA5',	'STIRA6',	'STINA7',	'STINA8' } },
+	FSTR = { exact = false,	rules = {	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STIRA5',	'STIRA6',	'STINA7',	'STINA8' } },
+	FSGL = { exact = false,	rules = {	'STINA8',	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STIRA5',	'STINA6',	'STINA7' } },
+	FSGR = { exact = false,	rules = {	'STINA2',	'STINA3',	'STINA4',	'STILA5',	'STINA6',	'STINA7',	'STINA8',	'STINA1' } },
+	FSLL = { exact = false,	rules = {	'STINA7',	'STINA8',	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STINA5',	'STINA6' } },
+	FSLR = { exact = false,	rules = {	'STINA3',	'STINA4',	'STINA5',	'STINA6',	'STINA7',	'STINA8',	'STINA1',	'STINA2' } },
+
+	DRLN = { exact = false,	rules = {	'STINA2',	'STINA3',	'STINA4',	'STILA5',	'STINA6',	'STINA7',	'STINA8',	'STINA1' } },
+	DRLO = { exact = false,	rules = {	'STINA2',	'STINA3',	'STINA4',	'STILA5',	'STINA6',	'STINA7',	'STINA8',	'STINA1' } },
+	DRLI = { exact = false,	rules = {	'STINA2',	'STINA3',	'STINA4',	'STILA5',	'STINA6',	'STINA7',	'STINA8',	'STINA1' } },
+	DRRN = { exact = false,	rules = {	'STINA8',	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STIRA5',	'STINA6',	'STINA7' } },
+	DRRO = { exact = false,	rules = {	'STINA8',	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STIRA5',	'STINA6',	'STINA7' } },
+	DRRI = { exact = false,	rules = {	'STINA8',	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STIRA5',	'STINA6',	'STINA7' } },
+
+	SPIN = { exact = true,	rules = {	'STINA1',	'STINA2',	'STINA3',	'STINA4',	'STINA5',	'STINA6',	'STINA7',	'STINA8' } }
 }
 
 -- List of skin buttons.

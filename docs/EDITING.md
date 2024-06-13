@@ -28,6 +28,16 @@ If a layer is missing for a graphic, Kart Builder will try to find a fallback la
 
 If Kart Builder cannot find any fallbacks in the chain, it will skip outputting that layer group. This is common for the `XTRA`, `DEAD`, `SIGN` and `SSIG` layers. In the example template, these are only rendered in the `body` layer group and the rest of the layer groups are transparent. It is suggested you only define these in the `body` layer group.
 
+# Autofill
+
+<img src="../screenshots/autofill.gif" align="center">
+
+Autofill is a tool used to create new cels from already-created ones. Most commonly it is used to paste and automatically offset `head` cels for glancing, turning and spinout sprites. To autofill, select one or more layers or cels, right click a layer and select `Kart Builder > Autofill`.
+
+After executing autofill rules you will need to manually adjust the offset of pasted heads to fit the body. This can be automated by specifying a list of autofill offsets for that layer beforehand. Right-click your layer > `Properties` > `User Data` and enter your list of offsets. These are a list of 8 comma-separated offsets in the format `x,y x,y x,y x,y x,y x,y x,y x,y`. Offsets can be negative (eg. `-4,0`) and the y-offset is optional (eg. `6` is equivalent to `6,0`).
+
+Browse the layers in the provided `example.ase` file to see how to configure your autofill offsets. For a full list of supported autofill rules, see [Autofills](AUTOFILLS.md).
+
 ## Tips
 
 * Go to `Edit > Keyboard Shortcuts > Menus` and define a shortcut for `File > Export > Export Kart` for faster exporting. `Ctrl+Shift+E` is suggested.
