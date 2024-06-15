@@ -1,3 +1,4 @@
+dofile 'error.lua'
 
 -- Base fallbacks for layers.
 local base_fallback = {
@@ -65,4 +66,15 @@ function layer_find(group, layername)
 	end
 
 	return nil
+end
+
+-- Get range of selected layers.
+function layer_range()
+	-- Determine range to run autofills.
+	local layers = {}
+
+	layers = table_filter(app.range.layers or {}, function (layer) return layer.isImage and layer.parent end )
+	if #layers == 0 then return error_new('No valid image layers were selected!') end
+
+	return layers
 end

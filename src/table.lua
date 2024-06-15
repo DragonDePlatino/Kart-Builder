@@ -70,6 +70,19 @@ function table_map(t, callback)
 	return out
 end
 
+-- Get values of table that pass a callback.
+function table_filter(t, callback)
+	local out = {}
+	
+	for _, value in ipairs(t) do
+		if callback(value) then
+			out[#out + 1] = value
+		end
+	end
+
+	return out
+end
+
 -- Concatenate two or more tables together into a new one.
 function table_concat(...)
 	local out = {}

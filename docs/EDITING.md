@@ -32,11 +32,25 @@ If Kart Builder cannot find any fallbacks in the chain, it will skip outputting 
 
 <img src="../screenshots/autofill.gif" align="center">
 
-Autofill is a tool used to create new cels from already-created ones. Most commonly it is used to paste and automatically offset `head` cels for glancing, turning and spinout sprites. To autofill, select one or more layers or cels, right click a layer and select `Kart Builder > Autofill`.
+Autofill is a tool used to create new cels from existing ones. Most commonly it is used to paste and automatically offset `head` cels for glancing, turning and spinout sprites. Select one or more layers or cels, right-click a layer and select `Kart Builder > Autofill`.
 
 After executing autofill rules you will need to manually adjust the offset of pasted heads to fit the body. This can be automated by specifying a list of autofill offsets for that layer beforehand. Right-click your layer > `Properties` > `User Data` and enter your list of offsets. These are a list of 8 comma-separated offsets in the format `x,y x,y x,y x,y x,y x,y x,y x,y`. Offsets can be negative (eg. `-4,0`) and the y-offset is optional (eg. `6` is equivalent to `6,0`).
 
 Browse the layers in the provided `example.ase` file to see how to configure your autofill offsets. For a full list of supported autofill rules, see [Autofills](AUTOFILLS.md).
+
+# Asymmetrize
+
+<img src="../screenshots/asymmetrize.gif" align="center">
+
+If you have drawn angles 1-5 for a layer, you can auto-generate the flipped asymmetric frames for it. Select one or more layers or cels, right-click a layer and select `Kart Builder > Asymmetrize`.
+
+# Ignore Cels
+
+<img src="../screenshots/ignore_cels.png" align="center">
+
+Sometimes, it is useful to have a cel as a visual reference but not emit it in the final output. To mark a cel as ignored, right-click it and go to `Cel Properties` > `User Data` > `Color` and set the cel to be red. Cels marked as red will be ignored in asymmetrify, autofill and the final export.
+
+In this example, frames 6-8 of the `body` and `kart` have been ignored. These can be used to help position the head without making the `STIN` animation asymmetrical.
 
 ## Tips
 

@@ -37,28 +37,52 @@ function init(plugin)
 		end
 	}
 
-	plugin:newMenuSeparator{
-		group = 'layer_popup_properties'
-	}
+	local groups = { 'layer_popup_properties', 'cel_popup_properties' }
+	for _, group in ipairs(groups) do
+		plugin:newMenuSeparator{
+			group = group
+		}
+	
+		plugin:newMenuGroup{
+			id = group .. '_kart_builder',
+			title = 'Kart Builder',
+			group = group
+		}
+	
+		plugin:newCommand{
+			id = 'KartBuilderAsymmetrize',
+			title = 'Asymmetrize',
+			group = group .. '_kart_builder',
+			onclick = command_asymmetrize
+		}
+	
+		plugin:newCommand{
+			id = 'KartBuilderAutofill',
+			title = 'Autofill',
+			group = group .. '_kart_builder',
+			onclick = command_autofill
+		}
+	end
 
-	plugin:newMenuGroup{
-		id = 'layer_popup_kart_builder',
-		title = 'Kart Builder',
-		group = 'layer_popup_properties'
-	}
+	
+end
 
-	plugin:newCommand{
-		id = 'KartBuilderAutofill',
-		title = 'Autofill',
-		group = 'layer_popup_kart_builder',
-		onclick = function()
-			local result = skin_autofill()
-			if errored(result) then
-				local error = error_new('Error running autofill.', result)
-				return dialog_error(error)
-			end
-		end
-	}
+-- Run an asymmetrize command.
+function command_asymmetrize()
+	local result = skin_asymmetrize()
+	if errored(result) then
+		local error = error_new('Error running asymmetrize.', result)
+		return dialog_error(error)
+	end
+end
+
+-- Run an autofill command.
+function command_autofill()
+	local result = skin_autofill()
+	if errored(result) then
+		local error = error_new('Error running autofill.', result)
+		return dialog_error(error)
+	end
 end
 
 -- Perform plugin shutdown.

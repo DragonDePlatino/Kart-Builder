@@ -346,62 +346,82 @@ function skin_save(path, properties)
 	return archive_create(path, entries)
 end
 
+-- Asymmetrize frames of specified layer(s).
+function skin_asymmetrize()
+
+	-- Determine range to run asymmetrize.
+	local layers = layer_range()
+	if errored(layers) then return dialog_notice(layers.error) end
+
+	for i, layer in ipairs(layers) do
+
+		local log = { 'Asymmetrized layer: '.. layer.name, '' }
+		for dest = 6, 8, 1 do
+			local source = 10 - dest
+			
+			local prefix = '    (' .. tostring(dest) .. ') '
+			local cel = cel_find(layer.parent, layer.name, 1, source, true)
+			if cel == nil then
+				log[#log + 1] = prefix .. 'Skipped. Angle was empty: ' .. source
+				goto continue
+			end
+
+			-- Copy over pixels from other cel to this one.
+			local image = Image(ImageSpec{ width = app.sprite.width, height = app.sprite.height, colorMode = ColorMode.INDEXED, transparentColor = 1 })
+			local canvas = app.sprite:newCel(layer, dest, image)
+			image_blit(canvas.image, cel.image, cel.position, true)
+
+			log[#log + 1] = prefix .. 'Copied: ' .. layer.name .. source
+			::continue::
+		end
+
+		if #layers == 1 then dialog_notice(table.unpack(log)) end
+	end
+
+	if #layers > 1 then dialog_notice('Asymmetrized ' .. #layers .. ' layers.') end
+	app.refresh()
+end
+
 -- Autofill frames of specified layer.
 function skin_autofill()
 
 	-- Determine range to run autofills.
-	local dests = {}
-	if #app.range.layers then
-		dests = app.range.layers
-	else
-		dests = { app.layer }
-		if dest == nil then return dialog_notice('No layer currently selected!') end
-		if dest.isGroup then return dialog_notice('Group layer was selected.', 'Autofill rules can only be executed on image layers.') end
-	end
+	local dests = layer_range()
+	if errored(dests) then return dialog_notice(dests.error) end
 
 	for i, dest in ipairs(dests) do
-		if dest.isGroup then goto continue_layer end
-
+		local log = { 'Executed autofill rules for layer: '.. dest.name, '' }
 		local offsets = string_points(dest.data)
-
-		local group = dest.parent
-		if group == nil then return dialog_notice('Selected layer had no parent group!') end
-		if group.isImage then return dialog_notice('Selected layer had an image layer parent.', 'Autofill rules can only be executed on image layers inside layer groups.') end
 		
 		local autofill = skin_autofills[dest.name]
 		if autofill == nil then return dialog_notice('No autofill rules available for layer: ' .. dest.name) end
 	
-		local log = { 'Executed autofill rules for layer: '.. dest.name, '' }
 		for i, rule in ipairs(autofill.rules) do
-			local prefix = '    (' .. tostring(i) .. ') '
-			local offset = offsets[i] or Point(0, 0)
-			if rule == '' then goto continue_rule end
-	
+			if rule == '' then goto continue end
+
 			local source, frame, angle = cel_split(rule)
 			if errored(source) then return error_new('Failed to parse autofill rule: ' .. rule, source) end
-	
-			local cel, flip = cel_find(group, source, frame, angle, autofill.exact)
+			
+			local prefix = '    (' .. tostring(i) .. ') '
+			local cel, flip = cel_find(dest.parent, source, frame, angle, autofill.exact)
 			if cel == nil then
 				log[#log + 1] = prefix .. 'Skipped. Cel was empty: ' .. rule
-				goto continue_rule
+				goto continue
 			end
 	
 			-- Copy over pixels from other cel to this one.
-			local sign = flip and -1 or 1
+			local offset = offsets[i] or Point(0, 0)
 			local image = Image(ImageSpec{ width = app.sprite.width, height = app.sprite.height, colorMode = ColorMode.INDEXED, transparentColor = 1 })
 			local canvas = app.sprite:newCel(dest, i, image)
-			image_blit(canvas.image, cel.image, Point(cel.position.x + offset.x * sign, cel.position.y, offset.y), flip)
+			image_blit(canvas.image, cel.image, Point(cel.position.x + offset.x * (flip and -1 or 1), cel.position.y, offset.y), flip)
 			
-	
 			log[#log + 1] = prefix .. 'Copied: ' .. rule .. ' (' .. tostring(offset.x) .. ', ' .. tostring(offset.y) .. ')'
-			::continue_rule::
+			::continue::
 		end
 
 		if #dests == 1 then dialog_notice(table.unpack(log)) end
-		::continue_layer::
 	end
 
 	if #dests > 1 then dialog_notice('Executed autofill rules for ' .. #dests .. ' layers.') end
-	
 	app.refresh()
 end

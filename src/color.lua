@@ -123,3 +123,8 @@ colors_skin = {
 	blossom		=	{	0,		252,	252,	176,	200,	177,	201,	202,	202,	34,		36,		38,		40,		42,		45,		46	},
 	taffy		=	{	0,		252,	252,	200,	200,	201,	202,	203,	204,	204,	205,	206,	207,	43,		45,		47	}
 }
+
+-- Returns true if given color is red.
+function color_red(color)
+	return color.alpha > 0 and color.red > color.green and color.red > color.blue
+end
