@@ -53,6 +53,23 @@ local skin_sprites = {
 	{ name = 'TALK', frames = {} }
 }
 
+-- Offset for each frame.
+local skin_offsets = {
+	DRLO = { { 0, 3 }, { 0, 0 } },
+	DRLI = { {-6, 0 }, { 0, 0 }, { 6, 0 }, { 0, 0 } },
+
+	DRRO = { { 0, 3 }, { 0, 0 } },
+	DRRI = { { 6, 0 }, { 0, 0 }, {-6, 0 }, { 0, 0 } },
+
+	SIGN = { { 0, -5 } },
+	SSIG = { { 0, -5 } }
+}
+
+-- Layers that have their final output cropped.
+local skin_crop = {
+	XTRA = true
+}
+
 -- Skin autofill rules.
 local skin_autofills = {
 	STIL = { exact = true,	rules = {	'',			'',			'',			'',			'STINA5'									 } },
@@ -103,10 +120,16 @@ local skin_buttons = {
 	}
 }
 
--- Layers that have their final output cropped.
-local layer_crop = {
-	XTRA = true
-}
+-- Get offset of a particular skin frame.
+function skin_offset(layername, frame)
+	local frames = skin_offsets[layername]
+	if not frames then return Point(0, 0) end
+
+	local offset = frames[frame]
+	if not offset then return Point(0, 0) end
+
+	return Point(offset[1], offset[2])
+end
 
 -- Parse contents of a skin file into a table.
 function skin_table(text)
@@ -253,6 +276,7 @@ function skin_save(path, properties)
 			-- Output single frame for each angle.
 			for frame, ditherstyle in ipairs(frames) do
 				local angles = { 1, 2, 3, 4, 5, 6, 7, 8 }
+				local offset = skin_offset(layername, frame)
 
 				-- Prescan for symmetrical output.
 				local symmetrical = true
@@ -286,7 +310,7 @@ function skin_save(path, properties)
 
 					-- Apply dithering to final image.
 					image_dither(image, ditherstyle)
-					local entry = image_entry(image, layername, frame, angle, symmetrical)
+					local entry = image_entry(image, layername, frame, angle, symmetrical, offset)
 					if errored(entry) then return error_new('Error writing angle image entry.', entry) end
 
 					-- Add to list of entries.
@@ -299,6 +323,7 @@ function skin_save(path, properties)
 			-- Directionless sprite, prescan for number of frames to output.
 			local symmetrical = true
 			local framecount = 0
+
 			for g, group in pairs(groups) do
 				local layer = layer_find(group, layername)
 				if layer == nil then goto continue end
@@ -313,6 +338,8 @@ function skin_save(path, properties)
 
 			-- Output each layer in stack.
 			for frame = 1, framecount do
+				local offset = skin_offset(layername, frame)
+
 				for g, group in pairs(groups) do
 					-- Treat different angles as frames for more compact sprite layout.
 					local cel, flip = cel_find(group, layername, 1, frame)
@@ -321,16 +348,16 @@ function skin_save(path, properties)
 					end
 				end
 
-				if layer_crop[layername] then
+				if skin_crop[layername] then
 					local bounds = image:shrinkBounds()
-					local cropped = Image(ImageSpec{ width=bounds.width, height=bounds.height, colorMode=ColorMode.INDEXED, transparentColor=1 })
+					local cropped = Image(ImageSpec{ width = bounds.width, height = bounds.height, colorMode = ColorMode.INDEXED, transparentColor = 1 })
 					image_blit(cropped, image, Point(), false)
 
-					local entry = image_entry(cropped, layername, frame, 0, false)
+					local entry = image_entry(cropped, layername, frame, 0, false, offset)
 					if errored(entry) then return error_new('Error writing cropped image entry.', entry) end 
 					entries[#entries + 1] = entry
 				else
-					local entry = image_entry(image, layername, frame, 0, false)
+					local entry = image_entry(image, layername, frame, 0, false, offset)
 					if errored(entry) then return error_new('Error writing directionless image entry.', entry) end 
 					entries[#entries + 1] = entry
 				end

@@ -81,7 +81,7 @@ function image_dither(image, style)
 end
 
 -- Get image pixels as a lump.
-function image_lump(image)
+function image_lump(image, offset)
 	local out = {}
 
 	-- Write image dimensions.
@@ -96,6 +96,9 @@ function image_lump(image)
 
 		pivot = slice.pivot
 		if pivot == nil then return error_new{ 'Sprite slice did not have pivot.', 'Edit your slice and set a pivot on your racer\'s origin pixel.' } end
+
+		-- Add per-frame offset to pivot.
+		pivot = Point(pivot.x + offset.x, pivot.y + offset.y)
 	end
 
 	-- Write offset of sprite.
@@ -170,14 +173,14 @@ function image_lump(image)
 end
 
 -- Get file entry for an image.
-function image_entry(image, layername, frame, angle, symmetrical)
+function image_entry(image, layername, frame, angle, symmetrical, offset)
 	-- Get output filename.
 	local suffix = string.char(64 + frame) .. angle
 	if angle > 1 and angle < 5 and symmetrical then suffix = suffix .. string.char(64 + frame) .. (10 - angle) end
 	local name = layername .. suffix
 	
 	-- Generate texture lump.
-	local lump = image_lump(image)
+	local lump = image_lump(image, offset)
 	if errored(lump) then return error_new({ 'Error writing texture lump: ' .. name }, lump) end
 		
 	-- Output texture lump.
