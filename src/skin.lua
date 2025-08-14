@@ -67,6 +67,7 @@ local skin_offsets = {
 
 -- Layers that have their final output cropped.
 local skin_crop = {
+	TALK = true,
 	XTRA = true
 }
 
